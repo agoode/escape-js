@@ -35,8 +35,7 @@ function Level(l) {
   }
 
   this.playerElement = new Image();
-  this.playerElement.style.position = "absolute";
-  this.playerElement.style.padding = "8px";
+  this.playerElement.className = "sprite";
 
   // maybe load more
   if (!stm.eof()) {
@@ -49,8 +48,7 @@ function Level(l) {
     for (var i = 0; i < this.botD.length; i++) {
       this.botD[i] = Level.DIR_DOWN;
       this.botE[i] = new Image();
-      this.botE[i].style.position = "absolute";
-      this.botE[i].style.padding = "8px";
+      this.botE[i].className = "sprite";
     }
   }
 }
@@ -72,27 +70,27 @@ function loadLevel(placeholder, lev, name) {
 
   var t = document.createElement("table");
   t.border = 1;
-  t.appendChild(createTableRowText("Magic", l.magic));
-  t.appendChild(createTableRowText("Width", l.width));
-  t.appendChild(createTableRowText("Height", l.height));
-  t.appendChild(createTableRowText("Title", l.title));
-  t.appendChild(createTableRowText("Author", l.author));
-  t.appendChild(createTableRowText("Player Start", 
-				   "(" + l.playerX + "," + l.playerY + ")"));
-
+  var tb = document.createElement("tbody");
+  tb.appendChild(createTableRowText("Magic", l.magic));
+  tb.appendChild(createTableRowText("Width", l.width));
+  tb.appendChild(createTableRowText("Height", l.height));
+  tb.appendChild(createTableRowText("Title", l.title));
+  tb.appendChild(createTableRowText("Author", l.author));
+  tb.appendChild(createTableRowText("Player Start", 
+				    "(" + l.playerX + "," + l.playerY + ")"));
   if (l.botI) {
     for (var i = 0; i < l.botI.length; i++) {
       var p = l.where(l.botI[i]);
-      t.appendChild(createTableRowText("Bot #" + (i+1), 
+      tb.appendChild(createTableRowText("Bot #" + (i+1), 
 				       Level.BOT_TYPES[l.botT[i]] 
 				       + " at (" + p[0] + "," + p[1] + ")"));
     }
   }
 
-  t.appendChild(createTableRowTiles("tiles", l.tiles, l.width, l.height));
-  t.appendChild(createTableRowTiles("otiles", l.oTiles, l.width, l.height));
-  t.appendChild(createTableRowTiles("dests", l.dests, l.width, l.height));
-  t.appendChild(createTableRowTiles("flags", l.flags, l.width, l.height));
+  tb.appendChild(createTableRowTiles("tiles", l.tiles, l.width, l.height));
+  tb.appendChild(createTableRowTiles("otiles", l.oTiles, l.width, l.height));
+  tb.appendChild(createTableRowTiles("dests", l.dests, l.width, l.height));
+  tb.appendChild(createTableRowTiles("flags", l.flags, l.width, l.height));
 
   var h3 = document.createElement("h3");
   h3.appendChild(document.createTextNode(l.title + " by " + l.author));
@@ -114,6 +112,7 @@ function loadLevel(placeholder, lev, name) {
 
   placeholder.appendChild(d);
 
+  t.appendChild(tb);
   placeholder.appendChild(t);
 
   l.updateSprites();
@@ -121,13 +120,7 @@ function loadLevel(placeholder, lev, name) {
 
 function makeLevelTiles(l) {
   var p = document.createElement("div");
-  p.style.border = "medium solid";
-  p.style.color = "#7b98b8";
-  p.style.background = "black";
-  p.style.position = "relative";
-  p.style.whiteSpace = "nowrap";
-  p.style.overflow = "hidden";
-  p.style.padding = "8px";
+  p.className = "levelcanvas";
   if (l.height > 20) {
     p.style.height = (20 * 32 + 8) + "px";
   }

@@ -1,0 +1,14 @@
+.sprite { 
+  position: absolute;
+  padding:  8px;
+}
+
+.levelcanvas { 
+  border:      medium solid;
+  color:       #7b98b8;
+  background:  black;
+  position:    relative;
+  white-space: nowrap;
+  overflow:    hidden;
+  padding:     8px;
+}
