@@ -55,11 +55,12 @@ function Level(l) {
   }
 }
 
-
-function loadLevels(placeholder) {
+function loadLevels() {
+  var z = document.createDocumentFragment();
   for (lev in levels) {
-    loadLevel(placeholder, levels[lev], lev);
+    loadLevel(z, levels[lev], lev);
   }
+  return z;
 }
 
 function loadLevel(placeholder, lev, name) {
@@ -112,7 +113,14 @@ function loadLevel(placeholder, lev, name) {
     }
   }
 
-  placeholder.appendChild(d);
+  var canvas = document.createElement("div");
+  canvas.className = "levelcanvas";
+  if (l.height > 20) {
+    canvas.style.height = (20 * 32 + 8) + "px";
+  }
+  canvas.appendChild(d);
+
+  placeholder.appendChild(canvas);
 
   t.appendChild(tb);
   placeholder.appendChild(t);
@@ -122,10 +130,8 @@ function loadLevel(placeholder, lev, name) {
 
 function makeLevelTiles(l) {
   var p = document.createElement("div");
-  p.className = "levelcanvas";
-  if (l.height > 20) {
-    p.style.height = (20 * 32 + 8) + "px";
-  }
+  p.style.margin = "8px";
+  p.style.position = "relative";
 
   for (var i = 0; i < l.elements.length; i++) {
     var el = l.elements[i];
@@ -136,6 +142,7 @@ function makeLevelTiles(l) {
       p.appendChild(br);
     }
   }
+
   return p;
 }
 
@@ -218,6 +225,4 @@ Level.prototype.updateSprites = function() {
     }
   }
 };
-
-var levels = new Object();
 

@@ -1,3 +1,4 @@
+var levels = new Object();
 
 function BitStream(data) {
   this.data = data;

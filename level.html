@@ -3,14 +3,17 @@
   <head>
     <title>Escape Items</title>
     <script src="util.js" type="text/javascript"></script>
-    <script src="level.js" type="text/javascript"></script>
-    <script src="tiles.js" type="text/javascript"></script>
     <script src="lev412.esx.js" type="text/javascript"></script>
     <script src="lev160.esx.js" type="text/javascript"></script>
+    <script src="level.js" type="text/javascript"></script>
+    <script src="tiles.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      var fragment = loadLevels();
+    </script>
     <link rel="stylesheet" type="text/css" href="master.css"></link>
   </head>
 
-  <body onload="loadLevels(document.getElementById('levels'))">
+  <body onload="document.getElementById('levels').appendChild(fragment)">
     <h1>Escape Items</h1>
     <p>The levels on this page are rendered completely client side.</p>
     <div id="levels"></div>
