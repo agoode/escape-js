@@ -42,8 +42,8 @@ function Level(l) {
 
 
 function loadLevels(placeholder) {
-  for (lev in Level.levels) {
-    loadLevel(placeholder, lev);
+  for (lev in levels) {
+    loadLevel(placeholder, levels[lev]);
   }
 }
 
@@ -131,4 +131,4 @@ Level.B_HUGBOT = 2;
 Level.BOT_TYPES = ["Broken", "Dalek", "Hugbot"];
 
 
-global.levels = new Object();
+var levels = new Object();

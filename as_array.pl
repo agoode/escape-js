@@ -5,7 +5,7 @@ use bytes;
 
 my $name = substr $ARGV[0], 0, -4;
 
-print "global.levels.$name = [";
+print "levels.$name = [";
 
 undef $/;
 
