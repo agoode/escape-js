@@ -32,13 +32,23 @@ if ($h % $size != 0) {
 my $tiles_across = $w / $size;
 my $tiles_down = $h / $size;
 
-print "Making ${size}x${size} tiles, $tiles_across across and $tiles_down down\n";
+print "Making ${size}x${size} tiles, $tiles_across across and $tiles_down down";
 
+my $c = 0;
 my ($i, $j);
 for ($j = 0; $j < $tiles_down; $j++) {
   for ($i = 0; $i < $tiles_across; $i++) {
     my $img2 = $img->Clone();
-    
+    $img2->Crop(width  => $size,
+		height => $size,
+		x      => ($i * $size),
+		y      => ($j * $size));
+
+    my $err = $img2->Write("tmp.png");
+    `pngcrush tmp.png $c.png`;
+    unlink("tmp.png");
+    print ".";
+    $c++;
   }
 }
 
