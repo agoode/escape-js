@@ -36,7 +36,7 @@ function Level(l) {
 
   this.playerElement = new Image();
   this.playerElement.style.position = "absolute";
-  this.playerElement.style.padding = "inherit";
+  this.playerElement.style.padding = "8px";
 
   // maybe load more
   if (!stm.eof()) {
@@ -50,7 +50,7 @@ function Level(l) {
       this.botD[i] = Level.DIR_DOWN;
       this.botE[i] = new Image();
       this.botE[i].style.position = "absolute";
-      this.botE[i].style.padding = "inherit";
+      this.botE[i].style.padding = "8px";
     }
   }
 }
