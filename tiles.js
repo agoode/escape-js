@@ -1,6 +1,7 @@
 var graphicsBase = "http://escape.evdebs.org/graphics/";
 var imgSuffix = ".png";
 
+
 // tiles
 var tiles32 = new Array();
 
@@ -8,6 +9,12 @@ for (var i = 0; i < 96; i++) {
   tiles32[i] = graphicsBase + "32x32/tiles/" + i + imgSuffix;
 }
 
+// heights
+var pHeight32 = 36;
+var bHeight32 = new Array();
+bHeight32[Level.B_BROKEN] = 32;
+bHeight32[Level.B_DALEK] = 37;
+bHeight32[Level.B_HUGBOT] = 37;
 
 // player
 var player32 = new Array();

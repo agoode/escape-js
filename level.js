@@ -36,6 +36,7 @@ function Level(l) {
 
   this.playerElement = new Image();
   this.playerElement.style.position = "absolute";
+  this.playerElement.style.padding = "inherit";
 
   // maybe load more
   if (!stm.eof()) {
@@ -49,6 +50,7 @@ function Level(l) {
       this.botD[i] = Level.DIR_DOWN;
       this.botE[i] = new Image();
       this.botE[i].style.position = "absolute";
+      this.botE[i].style.padding = "inherit";
     }
   }
 }
@@ -57,10 +59,6 @@ function Level(l) {
 function loadLevels(placeholder) {
   for (lev in levels) {
     loadLevel(placeholder, levels[lev], lev);
-  }
-
-  for (lev in levels) {
-    levels[lev].updateSprites();
   }
 }
 
@@ -101,8 +99,10 @@ function loadLevel(placeholder, lev, name) {
   placeholder.appendChild(h3);
 
   var d = makeLevelTiles(l);
+
   var p = l.playerElement;
   p.src = player32[l.playerD][0];
+  d.appendChild(p);
 
   if (l.botI) {
     for (var i = 0; i < l.botI.length; i++) {
@@ -114,8 +114,9 @@ function loadLevel(placeholder, lev, name) {
 
   placeholder.appendChild(d);
 
-  d.appendChild(p);
   placeholder.appendChild(t);
+
+  l.updateSprites();
 }
 
 function makeLevelTiles(l) {
@@ -125,17 +126,18 @@ function makeLevelTiles(l) {
   p.style.background = "black";
   p.style.position = "relative";
   p.style.whiteSpace = "nowrap";
-  //p.style.overflow = "hidden";
-  //p.style.width = l.width * 32 / 2;
+  p.style.overflow = "hidden";
+  p.style.padding = "8px";
+  if (l.height > 20) {
+    p.style.height = (20 * 32 + 8) + "px";
+  }
 
   for (var i = 0; i < l.elements.length; i++) {
     var el = l.elements[i];
-    el.style.overflow = "hidden";
     
     p.appendChild(el);
     if (i % l.width == l.width - 1) {
       var br = document.createElement("br");
-      el.style.overflow = "hidden";
       p.appendChild(br);
     }
   }
@@ -206,9 +208,8 @@ Level.prototype.where = function(idx) {
 Level.prototype.updateSprites = function() {
   var zOffset = 5;
 
-  var h = this.height * 32;
-  this.playerElement.style.left = this.playerX * 32;
-  this.playerElement.style.bottom = h - this.playerY * 32;
+  this.playerElement.style.left = (this.playerX * 32) + "px";
+  this.playerElement.style.top = (this.playerY * 32 - pHeight32) + "px";
   this.playerElement.style.zIndex = this.playerY + zOffset;
 
   if (this.botI) {
@@ -216,8 +217,8 @@ Level.prototype.updateSprites = function() {
       var b = this.botE[i];
       var w = this.where(this.botI[i]);
       
-      b.style.left = w[0] * 32;
-      b.style.bottom = h - w[1] * 32;
+      b.style.left = (w[0] * 32) + "px";
+      b.style.top = (w[1] * 32 - bHeight32[this.botT[i]]) + "px";
       b.style.zIndex = w[1] + zOffset;
     }
   }
