@@ -38,6 +38,12 @@ function Level(l) {
       this.botD[i] = Level.DIR_DOWN;
     }
   }
+
+  // initalize html elements
+  this.elements = new Array(this.tiles.length);
+  for (var i = 0; i < this.tiles.length; i++) {
+    this.elements[i] = tiles32[this.tiles[i]];
+  }
 }
 
 
@@ -49,6 +55,10 @@ function loadLevels(placeholder) {
 
 function loadLevel(placeholder, lev, name) {
   var l = new Level(lev);
+
+  var h2 = document.createElement("h2");
+  h2.appendChild(document.createTextNode(name));
+  placeholder.appendChild(h2);
 
   var t = document.createElement("table");
   t.border = 1;
@@ -74,13 +84,29 @@ function loadLevel(placeholder, lev, name) {
   t.appendChild(createTableRowTiles("dests", l.dests, l.width, l.height));
   t.appendChild(createTableRowTiles("flags", l.flags, l.width, l.height));
 
-
-  var h2 = document.createElement("h2");
-  h2.appendChild(document.createTextNode(name));
-  placeholder.appendChild(h2);
   placeholder.appendChild(t);
+
+  var h3 = document.createElement("h3");
+  h3.appendChild(document.createTextNode(l.title + " by " + l.author));
+  placeholder.appendChild(h3);
+
+  placeholder.appendChild(makeLevelTiles(l));
 }
 
+function makeLevelTiles(l) {
+  var p = document.createElement("p");
+  p.style.border = "medium solid";
+  p.style.color = "#7b98b8";
+  p.style.background = "black";
+
+  for (var i = 0; i < l.elements.length; i++) {
+    p.appendChild(l.elements[i].cloneNode(true));
+    if (i % l.width == l.width - 1) {
+      p.appendChild(document.createElement("br"));
+    }
+  }
+  return p;
+}
 
 function createTableRowTiles(title, tiles, w, h) {
   var pre = document.createElement("pre");
