@@ -51,7 +51,10 @@ function loadLevels(placeholder) {
   for (lev in levels) {
     loadLevel(placeholder, levels[lev], lev);
   }
+  onresize();
 }
+
+var layoutFuncs = new Array();
 
 function loadLevel(placeholder, lev, name) {
   var l = new Level(lev);
@@ -90,7 +93,21 @@ function loadLevel(placeholder, lev, name) {
   h3.appendChild(document.createTextNode(l.title + " by " + l.author));
   placeholder.appendChild(h3);
 
-  placeholder.appendChild(makeLevelTiles(l));
+  var d = makeLevelTiles(l);
+  var p = player32[l.playerD][0].cloneNode(true);
+  p.style.position = "absolute";
+  p.style.zIndex = 10;
+
+  layoutFuncs.push(function() {
+		     var x0 = d.firstChild.x;
+		     var y0 = d.firstChild.y;
+		     p.style.left = x0 + l.playerX * 32;
+		     p.style.top = y0 + l.playerY * 32 - p.height;
+		   });
+
+  d.appendChild(p);
+
+  placeholder.appendChild(d);
 }
 
 function makeLevelTiles(l) {
@@ -172,3 +189,9 @@ Level.prototype.where = function(idx) {
 
 
 var levels = new Object();
+
+onresize = function() {
+  for (var i = 0; i < layoutFuncs.length; i++) {
+    layoutFuncs[i]();
+  }
+};
