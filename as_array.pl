@@ -3,7 +3,7 @@
 use strict;
 use bytes;
 
-print "<script type=\"text/javascript\">\n<!--\nvar level=[";
+print "var level=[";
 
 undef $/;
 
@@ -12,4 +12,4 @@ while(<>) {
   print join ',', map (ord, @a);
 }
 
-print "];//\n-->\n</script>\n";
+print "];\n";
