@@ -94,10 +94,11 @@ function loadLevel(placeholder, lev, name) {
 }
 
 function makeLevelTiles(l) {
-  var p = document.createElement("p");
+  var p = document.createElement("div");
   p.style.border = "medium solid";
   p.style.color = "#7b98b8";
   p.style.background = "black";
+  p.style.width = l.width * 32;
 
   for (var i = 0; i < l.elements.length; i++) {
     p.appendChild(l.elements[i].cloneNode(true));
