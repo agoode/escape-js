@@ -255,7 +255,7 @@ Level.prototype.updateSprites = function() {
   var zOffset = 5;
 
   this.playerElement.style.left = (this.playerX * 32) + "px";
-  this.playerElement.style.top = (this.playerY * 32 - pHeight32) + "px";
+  this.playerElement.style.top = (this.playerY * 32 - (pHeight32 - 32)) + "px";
   this.playerElement.style.zIndex = this.playerY + zOffset;
 
   if (this.botI) {
@@ -264,7 +264,7 @@ Level.prototype.updateSprites = function() {
       var w = this.where(this.botI[i]);
       
       b.style.left = (w[0] * 32) + "px";
-      b.style.top = (w[1] * 32 - bHeight32[this.botT[i]]) + "px";
+      b.style.top = (w[1] * 32 - (bHeight32[this.botT[i]] - 32)) + "px";
       b.style.zIndex = w[1] + zOffset;
     }
   }
