@@ -33,7 +33,6 @@ function Level(l) {
     this.elements[i] = document.createElement("img");
     this.elements[i].width = 32;
     this.elements[i].height = 32;
-    this.elements[i].src = tiles32[this.tiles[i]];
   }
 
   this.playerElement = document.createElement("img");
@@ -60,7 +59,16 @@ function loadLevels() {
   for (lev in levels) {
     loadLevel(z, levels[lev], lev);
   }
-  return z;
+  document.getElementById('levels').appendChild(z);
+}
+
+var frame = 0;
+function animate() {
+  var ee = levels["lev412"].playerElement;
+  
+  ee.src = player32[Level.DIR_DOWN][(frame++) % 5];
+
+  setTimeout("animate()", 500);
 }
 
 function loadLevel(placeholder, lev, name) {
@@ -74,13 +82,14 @@ function loadLevel(placeholder, lev, name) {
   var t = document.createElement("table");
   t.border = 1;
   var tb = document.createElement("tbody");
-  tb.appendChild(createTableRowText("Magic", l.magic));
+  //  tb.appendChild(createTableRowText("Magic", l.magic));
   tb.appendChild(createTableRowText("Width", l.width));
   tb.appendChild(createTableRowText("Height", l.height));
-  tb.appendChild(createTableRowText("Title", l.title));
-  tb.appendChild(createTableRowText("Author", l.author));
+  //  tb.appendChild(createTableRowText("Title", l.title));
+  //  tb.appendChild(createTableRowText("Author", l.author));
   tb.appendChild(createTableRowText("Player Start", 
 				    "(" + l.playerX + "," + l.playerY + ")"));
+  /*
   if (l.botI) {
     for (var i = 0; i < l.botI.length; i++) {
       var p = l.where(l.botI[i]);
@@ -94,6 +103,7 @@ function loadLevel(placeholder, lev, name) {
   tb.appendChild(createTableRowTiles("otiles", l.oTiles, l.width, l.height));
   tb.appendChild(createTableRowTiles("dests", l.dests, l.width, l.height));
   tb.appendChild(createTableRowTiles("flags", l.flags, l.width, l.height));
+  */
 
   var h3 = document.createElement("h3");
   h3.appendChild(document.createTextNode(l.title + " by " + l.author));
@@ -115,6 +125,7 @@ function loadLevel(placeholder, lev, name) {
 
   var canvas = document.createElement("div");
   canvas.className = "levelcanvas";
+
   if (l.height > 20) {
     canvas.style.height = (20 * 32 + 8) + "px";
   }
@@ -128,10 +139,43 @@ function loadLevel(placeholder, lev, name) {
   l.updateSprites();
 }
 
+function makeKeyHandler(t) {
+  return function (e) {
+    switch (e.keyCode) {
+    case e.DOM_VK_LEFT:
+      t.curX -= 32;
+      t.style.left = t.curX + "px";
+      e.preventDefault();
+      break;
+    case e.DOM_VK_RIGHT:
+      t.curX += 32;
+      t.style.left = t.curX + "px";
+      e.preventDefault();
+      break;
+    case e.DOM_VK_UP:
+      t.curY -= 32;
+      t.style.top = t.curY + "px";
+      e.preventDefault();
+      break;
+    case e.DOM_VK_DOWN:
+      t.curY += 32;
+      t.style.top = t.curY + "px";
+      e.preventDefault();
+      break;
+    default:
+      alert(e.charCode);
+    }
+  };
+}
+
 function makeLevelTiles(l) {
   var p = document.createElement("div");
   p.style.margin = "8px";
   p.style.position = "relative";
+  p.curX = 0;
+  p.curY = 0;
+
+  document.addEventListener("keypress", makeKeyHandler(p), true);
 
   for (var i = 0; i < l.elements.length; i++) {
     var el = l.elements[i];
@@ -223,6 +267,9 @@ Level.prototype.updateSprites = function() {
       b.style.top = (w[1] * 32 - bHeight32[this.botT[i]]) + "px";
       b.style.zIndex = w[1] + zOffset;
     }
+  }
+  for (var i = 0; i < this.elements.length; i++) {
+    this.elements[i].src = tiles32[this.tiles[i]];
   }
 };
 
