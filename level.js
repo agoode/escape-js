@@ -30,11 +30,13 @@ function Level(l) {
   // initalize html elements
   this.elements = new Array(this.tiles.length);
   for (var i = 0; i < this.tiles.length; i++) {
-    this.elements[i] = new Image(32,32);
+    this.elements[i] = document.createElement("img");
+    this.elements[i].width = 32;
+    this.elements[i].height = 32;
     this.elements[i].src = tiles32[this.tiles[i]];
   }
 
-  this.playerElement = new Image();
+  this.playerElement = document.createElement("img");
   this.playerElement.className = "sprite";
 
   // maybe load more
@@ -47,7 +49,7 @@ function Level(l) {
     this.botE = Array(nBots);
     for (var i = 0; i < this.botD.length; i++) {
       this.botD[i] = Level.DIR_DOWN;
-      this.botE[i] = new Image();
+      this.botE[i] = document.createElement("img");
       this.botE[i].className = "sprite";
     }
   }
