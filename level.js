@@ -96,7 +96,7 @@ function loadLevel(placeholder, lev, name) {
   var d = makeLevelTiles(l);
   var p = player32[l.playerD][0].cloneNode(true);
   p.style.position = "absolute";
-  p.style.zIndex = 10;
+  p.style.zIndex = 1;
 
   layoutFuncs.push(function() {
 		     var x0 = d.firstChild.x;
@@ -105,9 +105,31 @@ function loadLevel(placeholder, lev, name) {
 		     p.style.top = y0 + l.playerY * 32 - p.height;
 		   });
 
+  if (l.botI) {
+    for (var i = 0; i < l.botI.length; i++) {
+      var b = bots32[l.botT[i]][0].cloneNode(true);
+      b.style.position = "absolute";
+      b.style.zIndex = i + 2;
+      layoutFuncs.push(makeBotLayoutFunction(i, b, l, d));
+      d.appendChild(b);
+    }
+  }
+
   d.appendChild(p);
 
   placeholder.appendChild(d);
+}
+
+function makeBotLayoutFunction(i, b, l, d) {
+  return function() {
+    var bot = l.botI[i];
+    var w = l.where(bot);
+    
+    var x0 = d.firstChild.x;
+    var y0 = d.firstChild.y;
+    b.style.left = x0 + w[0] * 32;
+    b.style.top = y0 + w[1] * 32 - b.height;
+  };
 }
 
 function makeLevelTiles(l) {
