@@ -4,8 +4,10 @@ var imgSuffix = ".png";
 var tiles32 = new Array();
 
 for (var i = 0; i < 96; i++) {
-  tiles32[i] = new Image(32,32);
+  tiles32[i] = document.createElement("img");
   tiles32[i].src = "graphics/32x32/tiles/" + i + imgSuffix;
+  tiles32[i].width = 32;
+  tiles32[i].height = 32;
 }
 
 
@@ -20,7 +22,7 @@ player32[Level.DIR_RIGHT] = loadPlayerImages("walk_right", 32);
 function loadPlayerImages(prefix, size) {
   var a = new Array();
   for (var i = 0; i < 5; i++) {
-    a[i] = new Image();
+    a[i] = document.createElement("img");
   }
 
   var prefix = getAnimPath(size) + prefix + "_";
@@ -35,9 +37,9 @@ function loadPlayerImages(prefix, size) {
 
 // bots
 var bots32 = new Array();
-bots32[Level.B_BROKEN] = [new Image()];
-bots32[Level.B_DALEK] = [new Image(), new Image()];
-bots32[Level.B_HUGBOT] = [new Image(), new Image()];
+bots32[Level.B_BROKEN] = [document.createElement("img")];
+bots32[Level.B_DALEK] = [document.createElement("img"), document.createElement("img")];
+bots32[Level.B_HUGBOT] = [document.createElement("img"), document.createElement("img")];
 
 bots32[Level.B_BROKEN][0].src = getAnimPath(32) + "deadrobot" + imgSuffix;
 bots32[Level.B_DALEK][0].src = getAnimPath(32) + "dalek_forward_0" + imgSuffix;
