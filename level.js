@@ -24,7 +24,7 @@ function Level(l) {
 
 
 function loadLevel(placeholder, location) {
-  var l = new Level(location.firstChild.data);
+  var l = new Level(level);
 
   var t = document.createElement("table");
   t.appendChild(createTableRow("Magic", l.magic));

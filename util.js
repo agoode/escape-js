@@ -1,10 +1,15 @@
 
-function BitStream(s) {
-  this.str = s;
+function BitStream(data) {
+  this.data = data;
   this.pos = 0;
 
   this.bitsLeftInByte = 0;
   this.nextByte = 0;
+
+  dp("BitStream dump\n");
+  for (var i = 0; i < this.data.length; i++) {
+    dp(this.data[i] + "\n");
+  }
 }
 
 BitStream.prototype.getInt32 = function() {
@@ -33,10 +38,10 @@ BitStream.prototype.getByte = function() {
 
 BitStream.prototype.getBit = function() {
   if (this.bitsLeftInByte == 0) {
-    if (this.pos >= this.str.length) {
+    if (this.pos >= this.data.length) {
       throw "Array bounds";
     }
-    this.nextByte = this.str.charCodeAt(this.pos);
+    this.nextByte = this.data[this.pos];
     this.pos++;
     
     this.bitsLeftInByte = 8;
