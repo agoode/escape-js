@@ -1,6 +1,5 @@
-function Level(location) {
-  this.location = location;
-
+function Level(l) {
+  this.location = l;
 }
 
 
