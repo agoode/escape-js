@@ -36,7 +36,6 @@ function Level(l) {
 
   this.playerElement = new Image();
   this.playerElement.style.position = "absolute";
-  this.playerElement.style.zIndex = 1;
 
   // maybe load more
   if (!stm.eof()) {
@@ -50,7 +49,6 @@ function Level(l) {
       this.botD[i] = Level.DIR_DOWN;
       this.botE[i] = new Image();
       this.botE[i].style.position = "absolute";
-      this.botE[i].style.zIndex = i + 2;
     }
   }
 }
@@ -126,12 +124,19 @@ function makeLevelTiles(l) {
   p.style.color = "#7b98b8";
   p.style.background = "black";
   p.style.position = "relative";
-  p.style.width = l.width * 32;
+  p.style.whiteSpace = "nowrap";
+  //p.style.overflow = "hidden";
+  //p.style.width = l.width * 32 / 2;
 
   for (var i = 0; i < l.elements.length; i++) {
-    p.appendChild(l.elements[i].cloneNode(true));
+    var el = l.elements[i];
+    el.style.overflow = "hidden";
+    
+    p.appendChild(el);
     if (i % l.width == l.width - 1) {
-      p.appendChild(document.createElement("br"));
+      var br = document.createElement("br");
+      el.style.overflow = "hidden";
+      p.appendChild(br);
     }
   }
   return p;
@@ -199,9 +204,12 @@ Level.prototype.where = function(idx) {
 };
 
 Level.prototype.updateSprites = function() {
+  var zOffset = 5;
+
   var h = this.height * 32;
   this.playerElement.style.left = this.playerX * 32;
   this.playerElement.style.bottom = h - this.playerY * 32;
+  this.playerElement.style.zIndex = this.playerY + zOffset;
 
   if (this.botI) {
     for (var i = 0; i < this.botI.length; i++) {
@@ -210,6 +218,7 @@ Level.prototype.updateSprites = function() {
       
       b.style.left = w[0] * 32;
       b.style.bottom = h - w[1] * 32;
+      b.style.zIndex = w[1] + zOffset;
     }
   }
 };
