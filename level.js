@@ -43,11 +43,11 @@ function Level(l) {
 
 function loadLevels(placeholder) {
   for (lev in levels) {
-    loadLevel(placeholder, levels[lev]);
+    loadLevel(placeholder, levels[lev], lev);
   }
 }
 
-function loadLevel(placeholder, lev) {
+function loadLevel(placeholder, lev, name) {
   var l = new Level(lev);
 
   var t = document.createElement("table");
@@ -57,13 +57,15 @@ function loadLevel(placeholder, lev) {
   t.appendChild(createTableRowText("Height", l.height));
   t.appendChild(createTableRowText("Title", l.title));
   t.appendChild(createTableRowText("Author", l.author));
-  t.appendChild(createTableRowText("Player X", l.playerX));
-  t.appendChild(createTableRowText("Player Y", l.playerY));
+  t.appendChild(createTableRowText("Player Start", 
+				   "(" + l.playerX + "," + l.playerY + ")"));
 
   if (l.botI) {
     for (var i = 0; i < l.botI.length; i++) {
-      t.appendChild(createTableRowText("Bot " + i, l.botI[i] + ", " +
-				       Level.BOT_TYPES[l.botT[i]]));
+      var p = l.where(l.botI[i]);
+      t.appendChild(createTableRowText("Bot #" + (i+1), 
+				       Level.BOT_TYPES[l.botT[i]] 
+				       + " at (" + p[0] + "," + p[1] + ")"));
     }
   }
 
@@ -73,7 +75,10 @@ function loadLevel(placeholder, lev) {
   t.appendChild(createTableRowTiles("flags", l.flags, l.width, l.height));
 
 
-  placeholder.parentNode.replaceChild(t, placeholder);
+  var h2 = document.createElement("h2");
+  h2.appendChild(document.createTextNode(name));
+  placeholder.appendChild(h2);
+  placeholder.appendChild(t);
 }
 
 
@@ -129,6 +134,14 @@ Level.B_DALEK = 1;
 Level.B_HUGBOT = 2;
 
 Level.BOT_TYPES = ["Broken", "Dalek", "Hugbot"];
+
+
+Level.prototype.where = function(idx) {
+  var x = idx % this.width;
+  var y = idx / this.width;
+
+  return [x,Math.floor(y)];
+};
 
 
 var levels = new Object();
