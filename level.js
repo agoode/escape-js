@@ -27,17 +27,34 @@ function loadLevel(placeholder, location) {
   var l = new Level(level);
 
   var t = document.createElement("table");
-  t.appendChild(createTableRow("Magic", l.magic));
-  t.appendChild(createTableRow("Width", l.width));
-  t.appendChild(createTableRow("Height", l.height));
-  t.appendChild(createTableRow("Title", l.title));
-  t.appendChild(createTableRow("Author", l.author));
-  t.appendChild(createTableRow("Player X", l.playerX));
-  t.appendChild(createTableRow("Player Y", l.playerY));
+  t.appendChild(createTableRowText("Magic", l.magic));
+  t.appendChild(createTableRowText("Width", l.width));
+  t.appendChild(createTableRowText("Height", l.height));
+  t.appendChild(createTableRowText("Title", l.title));
+  t.appendChild(createTableRowText("Author", l.author));
+  t.appendChild(createTableRowText("Player X", l.playerX));
+  t.appendChild(createTableRowText("Player Y", l.playerY));
+  t.appendChild(createTableRowTiles("tiles", l.tiles, l.width, l.height));
+  t.appendChild(createTableRowTiles("otiles", l.oTiles, l.width, l.height));
+  t.appendChild(createTableRowTiles("dests", l.dests, l.width, l.height));
+  t.appendChild(createTableRowTiles("flags", l.flags, l.width, l.height));
+
 
   placeholder.parentNode.replaceChild(t, placeholder);
 }
 
+
+function createTableRowTiles(title, tiles, w, h) {
+  var pre = document.createElement("pre");
+  pre.appendChild(document.createTextNode(tilesToString(tiles, 
+							w, h)));
+  return createTableRow(document.createTextNode(title), pre);
+}
+
+function createTableRowText(a,b) {
+  return createTableRow(document.createTextNode(a),
+			document.createTextNode(b));
+}
 
 function createTableRow(a,b) {
   var tr;
@@ -45,11 +62,23 @@ function createTableRow(a,b) {
 
   tr = document.createElement("tr");
   td = document.createElement("td");
-  td.appendChild(document.createTextNode(a));
+  td.appendChild(a);
   tr.appendChild(td);
   td = document.createElement("td");
-  td.appendChild(document.createTextNode(b));
+  td.appendChild(b);
   tr.appendChild(td);
 
   return tr;
+}
+
+
+function tilesToString(t, w, h) {
+  var s = "";
+  for (var j = 0; j < h; j++) {
+    for (var i = 0; i < w; i++) {
+      s += String.fromCharCode(t[j*w + i] + 32);
+    }
+    s += "\n";
+  }
+  return s;
 }

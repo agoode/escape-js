@@ -137,6 +137,7 @@ function RLEdecode(stm, len) {
 
 
 function dp(p) {
+  return;
   var d = document.getElementById("debug");
   if (d.firstChild == null) {
     d.appendChild(document.createTextNode(p));
