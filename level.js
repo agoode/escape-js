@@ -27,6 +27,17 @@ function Level(l) {
   this.dests = rleDecode(stm, this.width * this.height);
   this.flags = rleDecode(stm, this.width * this.height);
 
+  // initalize html elements
+  this.elements = new Array(this.tiles.length);
+  for (var i = 0; i < this.tiles.length; i++) {
+    this.elements[i] = new Image(32,32);
+    this.elements[i].src = tiles32[this.tiles[i]];
+  }
+
+  this.playerElement = new Image();
+  this.playerElement.style.position = "absolute";
+  this.playerElement.style.zIndex = 1;
+
   // maybe load more
   if (!stm.eof()) {
     var nBots = stm.getInt32();
@@ -34,15 +45,13 @@ function Level(l) {
     this.botT = rleDecode(stm, nBots);
     
     this.botD = Array(nBots);
+    this.botE = Array(nBots);
     for (var i = 0; i < this.botD.length; i++) {
       this.botD[i] = Level.DIR_DOWN;
+      this.botE[i] = new Image();
+      this.botE[i].style.position = "absolute";
+      this.botE[i].style.zIndex = i + 2;
     }
-  }
-
-  // initalize html elements
-  this.elements = new Array(this.tiles.length);
-  for (var i = 0; i < this.tiles.length; i++) {
-    this.elements[i] = tiles32[this.tiles[i]];
   }
 }
 
@@ -51,13 +60,15 @@ function loadLevels(placeholder) {
   for (lev in levels) {
     loadLevel(placeholder, levels[lev], lev);
   }
-  onresize();
-}
 
-var layoutFuncs = new Array();
+  for (lev in levels) {
+    levels[lev].updateSprites();
+  }
+}
 
 function loadLevel(placeholder, lev, name) {
   var l = new Level(lev);
+  levels[name] = l;
 
   var h2 = document.createElement("h2");
   h2.appendChild(document.createTextNode(name));
@@ -87,49 +98,26 @@ function loadLevel(placeholder, lev, name) {
   t.appendChild(createTableRowTiles("dests", l.dests, l.width, l.height));
   t.appendChild(createTableRowTiles("flags", l.flags, l.width, l.height));
 
-  placeholder.appendChild(t);
-
   var h3 = document.createElement("h3");
   h3.appendChild(document.createTextNode(l.title + " by " + l.author));
   placeholder.appendChild(h3);
 
   var d = makeLevelTiles(l);
-  var p = player32[l.playerD][0].cloneNode(true);
-  p.style.position = "absolute";
-  p.style.zIndex = 1;
-
-  layoutFuncs.push(function() {
-		     var x0 = d.firstChild.x;
-		     var y0 = d.firstChild.y;
-		     p.style.left = x0 + l.playerX * 32;
-		     p.style.top = y0 + l.playerY * 32 - p.height;
-		   });
+  var p = l.playerElement;
+  p.src = player32[l.playerD][0];
 
   if (l.botI) {
     for (var i = 0; i < l.botI.length; i++) {
-      var b = bots32[l.botT[i]][0].cloneNode(true);
-      b.style.position = "absolute";
-      b.style.zIndex = i + 2;
-      layoutFuncs.push(makeBotLayoutFunction(i, b, l, d));
+      var b = l.botE[i];
+      b.src = bots32[l.botT[i]][0];
       d.appendChild(b);
     }
   }
 
-  d.appendChild(p);
-
   placeholder.appendChild(d);
-}
 
-function makeBotLayoutFunction(i, b, l, d) {
-  return function() {
-    var bot = l.botI[i];
-    var w = l.where(bot);
-    
-    var x0 = d.firstChild.x;
-    var y0 = d.firstChild.y;
-    b.style.left = x0 + w[0] * 32;
-    b.style.top = y0 + w[1] * 32 - b.height;
-  };
+  d.appendChild(p);
+  placeholder.appendChild(t);
 }
 
 function makeLevelTiles(l) {
@@ -137,6 +125,7 @@ function makeLevelTiles(l) {
   p.style.border = "medium solid";
   p.style.color = "#7b98b8";
   p.style.background = "black";
+  p.style.position = "relative";
   p.style.width = l.width * 32;
 
   for (var i = 0; i < l.elements.length; i++) {
@@ -209,11 +198,21 @@ Level.prototype.where = function(idx) {
   return [x,Math.floor(y)];
 };
 
+Level.prototype.updateSprites = function() {
+  var h = this.height * 32;
+  this.playerElement.style.left = this.playerX * 32;
+  this.playerElement.style.bottom = h - this.playerY * 32;
+
+  if (this.botI) {
+    for (var i = 0; i < this.botI.length; i++) {
+      var b = this.botE[i];
+      var w = this.where(this.botI[i]);
+      
+      b.style.left = w[0] * 32;
+      b.style.bottom = h - w[1] * 32;
+    }
+  }
+};
 
 var levels = new Object();
 
-onresize = function() {
-  for (var i = 0; i < layoutFuncs.length; i++) {
-    layoutFuncs[i]();
-  }
-};
