@@ -1,7 +1,7 @@
 function Level(l) {
   this.lev = l;
 
-  var stm = new Stream(l);
+  var stm = new BitStream(l);
 
   this.magic = stm.getString(4);
   this.width = stm.getInt32();
@@ -49,28 +49,62 @@ function createTableRow(a,b) {
   return tr;
 }
 
-function Stream(s) {
+function BitStream(s) {
   this.str = s;
   this.pos = 0;
+
+  this.bitsLeftInByte = 0;
+  this.nextByte = 0;
 }
 
-Stream.prototype.getInt32 = function() {
+BitStream.prototype.getInt32 = function() {
   var r = 0;
-  var s = this.str;
-  var p = this.pos;
 
-  r += s.charCodeAt(p) << 24;
-  r += s.charCodeAt(p+1) << 16;
-  r += s.charCodeAt(p+2) << 8;
-  r += s.charCodeAt(p+3);
+  r += this.getByte() << 24;
+  r += this.getByte() << 16;
+  r += this.getByte() << 8;
+  r += this.getByte();
 
-  this.pos += 4;
   return r;
 };
 
-Stream.prototype.getString = function(i) {
+BitStream.prototype.getString = function(i) {
+  this.getRestOfByte();
   var s = this.str.substring(this.pos, this.pos + i);
   this.pos += i;
   return s;
-}
+};
 
+BitStream.prototype.getByte = function() {
+  var b = this.str.charCodeAt(this.pos);
+  this.pos++;
+  return b;
+};
+
+BitStream.prototype.getBit = function() {
+  if (this.bitsLeftInByte == 0) {
+    this.nextByte = getByte();
+  }
+
+  var b = (this.nextByte & 128) == 128;
+  this.nextByte <<= 1;
+  this.bitsLeftInByte--;
+  return b;
+};
+
+BitStream.prototype.getBits = function(bits) {
+  var bb = 0;
+  while(bits > 0) {
+    bb <<= 1;
+    if (this.getBit()) {
+      bb++;
+    }
+    bits--;
+  }
+
+  return bb;
+};
+
+BitStream.prototype.getRestOfByte = function() {
+  return this.getBits(this.bitsLeftInByte);
+};
