@@ -3,7 +3,9 @@
 use strict;
 use bytes;
 
-print "var level=[";
+my $name = substr $ARGV[0], 0, -4;
+
+print "global.levels.$name = [";
 
 undef $/;
 

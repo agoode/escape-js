@@ -1,9 +1,14 @@
 function Level(l) {
-  this.lev = l;
+  this.origLevel = l;
 
   var stm = new BitStream(l);
 
   this.magic = stm.getString(4);
+
+  if (this.magic != "ESXL") {
+    throw "Bad magic";
+  }
+
   this.width = stm.getInt32();
   this.height = stm.getInt32();
   
@@ -15,18 +20,38 @@ function Level(l) {
 
   this.playerX = stm.getInt32();
   this.playerY = stm.getInt32();
+  this.playerD = Level.DIR_DOWN;
 
-  this.tiles = RLEdecode(stm, this.width * this.height);
-  this.oTiles = RLEdecode(stm, this.width * this.height);
-  this.dests = RLEdecode(stm, this.width * this.height);
-  this.flags = RLEdecode(stm, this.width * this.height);
+  this.tiles = rleDecode(stm, this.width * this.height);
+  this.oTiles = rleDecode(stm, this.width * this.height);
+  this.dests = rleDecode(stm, this.width * this.height);
+  this.flags = rleDecode(stm, this.width * this.height);
+
+  // maybe load more
+  if (!stm.eof()) {
+    var nBots = stm.getInt32();
+    this.botI = rleDecode(stm, nBots);
+    this.botT = rleDecode(stm, nBots);
+    
+    this.botD = Array(nBots);
+    for (var i = 0; i < this.botD.length; i++) {
+      this.botD[i] = Level.DIR_DOWN;
+    }
+  }
 }
 
 
-function loadLevel(placeholder, location) {
-  var l = new Level(level);
+function loadLevels(placeholder) {
+  for (lev in Level.levels) {
+    loadLevel(placeholder, lev);
+  }
+}
+
+function loadLevel(placeholder, lev) {
+  var l = new Level(lev);
 
   var t = document.createElement("table");
+  t.border = 1;
   t.appendChild(createTableRowText("Magic", l.magic));
   t.appendChild(createTableRowText("Width", l.width));
   t.appendChild(createTableRowText("Height", l.height));
@@ -34,6 +59,14 @@ function loadLevel(placeholder, location) {
   t.appendChild(createTableRowText("Author", l.author));
   t.appendChild(createTableRowText("Player X", l.playerX));
   t.appendChild(createTableRowText("Player Y", l.playerY));
+
+  if (l.botI) {
+    for (var i = 0; i < l.botI.length; i++) {
+      t.appendChild(createTableRowText("Bot " + i, l.botI[i] + ", " +
+				       Level.BOT_TYPES[l.botT[i]]));
+    }
+  }
+
   t.appendChild(createTableRowTiles("tiles", l.tiles, l.width, l.height));
   t.appendChild(createTableRowTiles("otiles", l.oTiles, l.width, l.height));
   t.appendChild(createTableRowTiles("dests", l.dests, l.width, l.height));
@@ -82,3 +115,20 @@ function tilesToString(t, w, h) {
   }
   return s;
 }
+
+
+
+Level.DIR_NONE = 0;
+Level.DIR_UP = 1;
+Level.DIR_DOWN = 2;
+Level.DIR_LEFT = 3;
+Level.DIR_RIGHT = 4;
+
+Level.B_BROKEN = 0;
+Level.B_DALEK = 1;
+Level.B_HUGBOT = 2;
+
+Level.BOT_TYPES = ["Broken", "Dalek", "Hugbot"];
+
+
+global.levels = new Object();

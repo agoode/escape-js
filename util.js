@@ -75,9 +75,12 @@ BitStream.prototype.getRestOfByte = function() {
   return this.getBits(this.bitsLeftInByte);
 };
 
+BitStream.prototype.eof = function() {
+  return (this.bitsLeftInByte == 0) && (this.pos >= this.data.length);
+};
 
 
-function RLEdecode(stm, len) {
+function rleDecode(stm, len) {
 
   var result = new Array(len);
   
