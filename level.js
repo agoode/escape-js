@@ -15,6 +15,11 @@ function Level(l) {
 
   this.playerX = stm.getInt32();
   this.playerY = stm.getInt32();
+
+  this.tiles = RLEdecode(stm, this.width * this.height);
+  this.oTiles = RLEdecode(stm, this.width * this.height);
+  this.dests = RLEdecode(stm, this.width * this.height);
+  this.flags = RLEdecode(stm, this.width * this.height);
 }
 
 
@@ -48,63 +53,3 @@ function createTableRow(a,b) {
 
   return tr;
 }
-
-function BitStream(s) {
-  this.str = s;
-  this.pos = 0;
-
-  this.bitsLeftInByte = 0;
-  this.nextByte = 0;
-}
-
-BitStream.prototype.getInt32 = function() {
-  var r = 0;
-
-  r += this.getByte() << 24;
-  r += this.getByte() << 16;
-  r += this.getByte() << 8;
-  r += this.getByte();
-
-  return r;
-};
-
-BitStream.prototype.getString = function(i) {
-  this.getRestOfByte();
-  var s = this.str.substring(this.pos, this.pos + i);
-  this.pos += i;
-  return s;
-};
-
-BitStream.prototype.getByte = function() {
-  var b = this.str.charCodeAt(this.pos);
-  this.pos++;
-  return b;
-};
-
-BitStream.prototype.getBit = function() {
-  if (this.bitsLeftInByte == 0) {
-    this.nextByte = getByte();
-  }
-
-  var b = (this.nextByte & 128) == 128;
-  this.nextByte <<= 1;
-  this.bitsLeftInByte--;
-  return b;
-};
-
-BitStream.prototype.getBits = function(bits) {
-  var bb = 0;
-  while(bits > 0) {
-    bb <<= 1;
-    if (this.getBit()) {
-      bb++;
-    }
-    bits--;
-  }
-
-  return bb;
-};
-
-BitStream.prototype.getRestOfByte = function() {
-  return this.getBits(this.bitsLeftInByte);
-};
